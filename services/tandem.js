@@ -1,12 +1,10 @@
-const TandemEndpoint = 'https://wherever2';
-
 const tandemHeaders = {
   'Content-Type': 'application/json',
 };
 
 const sendToTandem = async (thermoStatData) => {
   try {
-    const response = await fetch(TandemEndpoint, {
+    const response = await fetch(process.env['TANDEM_ENDPOINT'], {
       method: 'POST',
       headers: tandemHeaders,
       body: JSON.stringify(thermoStatData),
