@@ -21,7 +21,7 @@ const thermoStatHeaders = async () => {
   }
 }
 
-const fetchThermoStat = async (config) => {
+const fetchThermoStat = async () => {
   try {
     const response = await fetch(ThermoStatTemperatureEndpoint, {
       method: 'GET',
