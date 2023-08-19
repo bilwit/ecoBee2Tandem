@@ -6,7 +6,7 @@ const ThermoStatTemperatureEndpoint = 'https://api.ecobee.com/1/thermostat?forma
 const ecoBeeTokens = {
   access: '',
   refresh: '',
-}
+} 
 
 // different APIs require different types of authentication so you might need to add special authentication header here
 const thermoStatHeaders = () => {
@@ -77,4 +77,4 @@ setInterval(async () => {
   } catch (e) {
     console.log('failed to ferry data')
   }
-}, 60000); // every 30 seconds
+}, process.env['UPDATEINTERVAL']); // every 30 seconds
