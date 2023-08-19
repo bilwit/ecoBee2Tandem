@@ -1,4 +1,4 @@
-export const formatData = (thermoStatData) => {
+const formatData = (thermoStatData) => {
   // thermostatList is an array with all devices associated with the ecobee account
   if (thermoStatData?.thermostatList && thermoStatData.thermostatList.length > 0) {
     const devices = {};
@@ -12,3 +12,5 @@ export const formatData = (thermoStatData) => {
   }
   return thermoStatData;
 }
+
+exports.formatData = formatData;

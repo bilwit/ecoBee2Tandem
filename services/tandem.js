@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const tandemHeaders = {
   'Content-Type': 'application/json',
 };
@@ -20,3 +22,5 @@ const sendToTandem = async (thermoStatData) => {
     throw(e);
   }
 }
+
+exports.sendToTandem = sendToTandem;

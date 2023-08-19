@@ -1,5 +1,7 @@
-import formatData from './utils/formatData';
-import { authThermoStatInit, authThermoStatRefresh } from './services/auth';
+require('dotenv').config();
+const { formatData } = require('./utils/formatData');
+const { authThermoStatInit, authThermoStatRefresh } = require('./services/auth');
+const { sendToTandem } = require('./services/tandem');
 
 const ThermoStatTemperatureEndpoint = 'https://api.ecobee.com/1/thermostat?format=json&body={"selection":{"selectionType":"registered","selectionMatch":"","includeRuntime":true}}';
 
@@ -48,6 +50,9 @@ const wrapThermoStatAuthInitDispatch = async () => {
       apiKey: process.env['ECOBEE_APIKEY'],
       authCode: process.env['ECOBEE_AUTHCODE'],
     });
+    if (thermoStatAuthInitData) {
+      console.log(thermoStatAuthInitData)
+    }
     if (thermoStatAuthInitData && thermoStatAuthInitData?.access && thermoStatAuthInitData?.refresh) {
       ecoBeeTokens['authCode'] = thermoStatAuthInitData.access;
       ecoBeeTokens['authKey'] = thermoStatAuthInitData.refresh;
@@ -60,21 +65,21 @@ const wrapThermoStatAuthInitDispatch = async () => {
 // obtain initial access & refresh tokens
 wrapThermoStatAuthInitDispatch();
 
-setInterval(async () => {
-  try {
-    const thermoStatData = await fetchThermoStat({
-      apiKey: process.env['ECOBEE_APIKEY'],
-      authCode: process.env['ECOBEE_AUTHCODE'],
-    }, ecoBeeTokens);
+// setInterval(async () => {
+//   try {
+//     const thermoStatData = await fetchThermoStat({
+//       apiKey: process.env['ECOBEE_APIKEY'],
+//       authCode: process.env['ECOBEE_AUTHCODE'],
+//     }, ecoBeeTokens);
 
-    // need to do data manipulation to get it to the format that Tandem is expecting to recieve
-    const data = formatData(thermoStatData);
+//     // need to do data manipulation to get it to the format that Tandem is expecting to recieve
+//     const data = formatData(thermoStatData);
 
-    if (data?.[process.env['ECOBEE_DEVICENAME']]) {
-      sendToTandem(data[process.env['ECOBEE_DEVICENAME']]);
-    }
+//     if (data?.[process.env['ECOBEE_DEVICENAME']]) {
+//       sendToTandem(data[process.env['ECOBEE_DEVICENAME']]);
+//     }
     
-  } catch (e) {
-    console.log('failed to ferry data')
-  }
-}, process.env['UPDATEINTERVAL']); // every 30 seconds
+//   } catch (e) {
+//     console.log('failed to ferry data')
+//   }
+// }, process.env['UPDATEINTERVAL']); // every 30 seconds
