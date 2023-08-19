@@ -4,12 +4,12 @@ const AccessToken = require("../models/AccessToken");
 const ThermoStatAuthEndpoint = 'https://api.ecobee.com/token';
 
 // get initial auth & refresh tokens from EcoBee, auth token expires in 60min
-const authThermoStatInit = async (config) => {
+const authThermoStatInit = async () => {
   try {
     const response = await fetch(ThermoStatAuthEndpoint +
       '?grant_type=ecobeePin' +
-      '&code=' + config['authCode'] +
-      '&client_id=' + config['apiKey']
+      '&code=' + process.env['ECOBEE_AUTHCODE'] +
+      '&client_id=' + process.env['ECOBEE_APIKEY']
     , {
       method: 'POST',
     });
@@ -17,8 +17,16 @@ const authThermoStatInit = async (config) => {
       const res = await response.json();
       if (res?.error) {
         throw res;
-      } else {
-        return await response.json();
+      } else if (res && res?.access && res?.refresh) {
+        const newAccessToken = new AccessToken({
+          token: res.access,
+        });
+        newAccessToken.save();
+        const newRefreshToken = new RefreshToken({
+          token: res.refresh,
+        })
+        newRefreshToken.save();
+        return true;
       }
     } else {
       throw true;
