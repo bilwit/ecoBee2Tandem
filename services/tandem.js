@@ -14,6 +14,7 @@ const sendToTandem = async (thermoStatData) => {
     });
     if (response) {
       if (response.status === 200) {
+        console.log((new Date(thermoStatData)).toDateString() + ': ' + thermoStatData.temperature);
         return true;
       } else {
         throw response;
