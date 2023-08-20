@@ -32,7 +32,6 @@ const fetchThermoStat = async () => {
       if (res?.error) {
         throw res;
       } else {
-        console.log(res)
         return await res;
       }
     } else {

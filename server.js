@@ -31,7 +31,6 @@ const wrapDispatch = async () => {
     const data = formatData(thermoStatData);
 
     if (data?.[process.env['ECOBEE_DEVICENAME']]) {
-      console.log(data?.[process.env['ECOBEE_DEVICENAME']]);
       sendToTandem(data[process.env['ECOBEE_DEVICENAME']]);
     }
   } catch (e) {

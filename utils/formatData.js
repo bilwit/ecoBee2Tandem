@@ -4,8 +4,8 @@ const formatData = (thermoStatData) => {
     const devices = {};
     for (const item of thermoStatData.thermostatList) {
       devices[item.name] = {
-        date: item.thermostatTime,
-        temperature: item.runtime.actualTemperature,
+        date: (new Date(item.thermostatTime)).getTime(),
+        temperature: item.runtime.actualTemperature * 0.1, // temperature is reported in 0.1 per Fahrenheit
       }
     }
     return devices;

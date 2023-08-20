@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const tandemHeaders = {
   'Content-Type': 'application/json',
+  'Authorization': 'Basic ' + btoa(':' + process.env['TANDEM_INGESTION_PASSWORD']),
 };
 
 const sendToTandem = async (thermoStatData) => {
@@ -12,7 +13,11 @@ const sendToTandem = async (thermoStatData) => {
       body: JSON.stringify(thermoStatData),
     });
     if (response) {
-      return response.json();
+      if (response.status === 200) {
+        return true;
+      } else {
+        throw response;
+      }
     } else {
       throw true;
     }
