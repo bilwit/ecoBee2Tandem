@@ -47,6 +47,7 @@ const fetchThermoStat = async () => {
     await authThermoStatRefresh({
       apiKey: process.env['ECOBEE_APIKEY'],
       authCode: process.env['ECOBEE_AUTHCODE'],
+
     }, refreshToken?.token || process.env['INIT_REFRESH']);
 
     throw(e);

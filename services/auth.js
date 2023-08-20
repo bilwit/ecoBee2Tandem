@@ -1,3 +1,4 @@
+require('dotenv').config();
 const RefreshToken = require("../models/RefreshToken");
 const AccessToken = require("../models/AccessToken");
 
@@ -38,25 +39,29 @@ const authThermoStatInit = async () => {
     const refreshToken = await RefreshToken.findOne({}).select('token').lean();
 
     if (refreshToken?.token || process.env['INIT_REFRESH']) {
-      const refreshData = await authThermoStatRefresh(config, refreshToken?.token || process.env['INIT_REFRESH']);
+      try {
+        const refreshData = await authThermoStatRefresh(refreshToken?.token || process.env['INIT_REFRESH']);
   
-      if (refreshData && refreshData['access_token'] && (refreshData['refresh_token'])) {
-        await AccessToken.deleteMany({});
-        const newAccessToken = new AccessToken({
-          token: refreshData['access_token'],
-        });
-        newAccessToken.save();
-
-        const dupeRefresh = await RefreshToken.find({
-          token: refreshData['refresh_token'],
-        }).select('token').lean();
-
-        if (dupeRefresh && dupeRefresh.length < 1) {
-          const newRefreshToken = new RefreshToken({
+        if (refreshData && refreshData['access_token'] && (refreshData['refresh_token'])) { 
+          await AccessToken.deleteMany({});
+          const newAccessToken = new AccessToken({
+            token: refreshData['access_token'],
+          });
+          newAccessToken.save();
+  
+          const dupeRefresh = await RefreshToken.find({
             token: refreshData['refresh_token'],
-          })
-          newRefreshToken.save();
+          }).select('token').lean();
+  
+          if (dupeRefresh && dupeRefresh.length < 1) {
+            const newRefreshToken = new RefreshToken({
+              token: refreshData['refresh_token'],
+            })
+            newRefreshToken.save();
+          }
         }
+      } catch (er) {
+        console.log(er);
       }
     }
 
@@ -65,12 +70,12 @@ const authThermoStatInit = async () => {
 }
 
 // refresh tokens using refresh_token
-const authThermoStatRefresh = async (config, refresh) => {
+const authThermoStatRefresh = async (refresh) => {
   try {
     const response = await fetch(ThermoStatAuthEndpoint +
       '?grant_type=refresh_token' +
       '&code=' + refresh +
-      '&client_id=' + config['apiKey']
+      '&client_id=' + process.env['ECOBEE_APIKEY']
     , {
       method: 'POST',
     });

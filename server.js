@@ -32,7 +32,7 @@ const wrapDispatch = async () => {
 
     if (data?.[process.env['ECOBEE_DEVICENAME']]) {
       console.log(data?.[process.env['ECOBEE_DEVICENAME']]);
-      // sendToTandem(data[process.env['ECOBEE_DEVICENAME']]);
+      sendToTandem(data[process.env['ECOBEE_DEVICENAME']]);
     }
   } catch (e) {
     console.log(e);
