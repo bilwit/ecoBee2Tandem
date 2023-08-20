@@ -2,7 +2,7 @@
 Send smart home ecobee data to Tandem API
 
 ## Description
-Request temperature data from a single ecobee device and send it to a Tandem stream sensor in regular intervals.
+Request temperature data from a single ecobee device and send it to a Tandem stream sensor at regular intervals.
 
 ## Required Environment Variables
 - ECOBEE_APIKEY
